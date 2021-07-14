@@ -1,0 +1,37 @@
+{
+    "name": "mvaliolahi/attachable",
+    "description": "This package allows you to attach files to Eloquent models.",
+    "authors": [
+        {
+            "name": "Meysam Valiolahi",
+            "email": "mvaliolahi@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mvaliolahi\\Attachable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "require": {
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mvaliolahi\\Attachable\\ServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "orchestra/testbench": "^6.0",
+        "laravel/framework": "^8.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
