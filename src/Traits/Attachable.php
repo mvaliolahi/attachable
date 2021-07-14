@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits\Attachable;
+namespace Mvaliolahi\Attachable\Traits;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;

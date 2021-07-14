@@ -11,7 +11,7 @@ class Post extends Model
 {
     use Attachable;
 
-    public $attachable = [
+    protected $attachable = [
         'image',
         'cover'
     ];
