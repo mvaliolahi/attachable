@@ -40,9 +40,10 @@ trait Attachable
      */
     private static function upload($model, UploadedFile $uploadedFile)
     {
+        $basePath = static::$upload_path ?? 'public';
         $directoryName = strtolower(Str::plural(class_basename($model), 2));
-
-        return Storage::put($directoryName , $uploadedFile, 'public');
+        
+        return Storage::put("{$basePath}/{$directoryName}" , $uploadedFile, 'public');
     }
 
     /**
