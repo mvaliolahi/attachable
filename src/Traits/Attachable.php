@@ -11,14 +11,15 @@ trait Attachable
     public static function bootAttachable()
     {
         static::saving(function ($model) {
+
             collect($model->attachable)->each(function ($field) use ($model) {
 
-                if (isset($model->$field) && $model->$field instanceof UploadedFile) {
+                if (isset($model->$field) && request($field) instanceof UploadedFile) {
                     self::deletePreviousFile($model, $field);
-                    $model->$field = self::upload($model, $model->$field);
+                    $model->$field = self::upload($model, request($field));
                 } else {
-                    // user previous value to prevent delete field value in update scenario.
-                    $model->$field = $model->fresh()->$field ?? null;
+                    // use previous value to prevent delete field value in update scenario.
+                    $model->$field = $model->fresh()->getRawOriginal($field) ?? null;
                 }
             });
         });
@@ -42,8 +43,8 @@ trait Attachable
     {
         $basePath = static::$upload_path ?? 'public';
         $directoryName = strtolower(Str::plural(class_basename($model), 2));
-        
-        return Storage::put("{$basePath}/{$directoryName}" , $uploadedFile, 'public');
+
+        return Storage::put("{$basePath}/{$directoryName}", $uploadedFile, 'public');
     }
 
     /**
