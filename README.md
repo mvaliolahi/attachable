@@ -16,6 +16,9 @@ class Post extends Model
         'cover'
     ];
 
+    // This property is optional and allows each user's files to be saved in a separate folder.
+    protected $user_directory = true;
+
     public function coverUrl()
     {
         return asset(Storage::url($this->cover));

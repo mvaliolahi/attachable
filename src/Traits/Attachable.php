@@ -45,6 +45,11 @@ trait Attachable
         $basePath = static::$upload_path ?? 'public';
         $directoryName = strtolower(Str::plural(class_basename($model), 2));
 
+        if (static::$user_directory ?? false)
+        {
+            $directoryName = $directoryName . '/' . auth()->id();
+        }
+
         return Storage::put("{$basePath}/{$directoryName}", $uploadedFile, 'public');
     }
 
