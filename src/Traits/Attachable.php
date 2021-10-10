@@ -47,7 +47,7 @@ trait Attachable
 
         if ($model->user_directory ?? false)
         {
-            $directoryName = $directoryName . '/' . auth()->id();
+            $directoryName = $directoryName . '/' . sha1(auth()->id());
         }
 
         return Storage::put("{$basePath}/{$directoryName}", $uploadedFile, 'public');
