@@ -42,10 +42,10 @@ trait Attachable
      */
     private static function upload($model, UploadedFile $uploadedFile)
     {
-        $basePath = static::$upload_path ?? 'public';
+        $basePath = $model->upload_path ?? 'public';
         $directoryName = strtolower(Str::plural(class_basename($model), 2));
 
-        if (static::$user_directory ?? false)
+        if ($model->user_directory ?? false)
         {
             $directoryName = $directoryName . '/' . auth()->id();
         }

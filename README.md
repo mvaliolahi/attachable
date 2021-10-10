@@ -27,7 +27,7 @@ class Post extends Model
 By default, files will be uploaded to the `public` directory, but you can change it by adding the `$upload_path` property to your model.
 
 ```php
-protected static $upload_path = 'public';
+protected $upload_path = 'public';
 ```
 
 ### Separate files for each user
