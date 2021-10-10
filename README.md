@@ -16,9 +16,6 @@ class Post extends Model
         'cover'
     ];
 
-    // This property is optional and allows each user's files to be saved in a separate folder.
-    protected $user_directory = true;
-
     public function coverUrl()
     {
         return asset(Storage::url($this->cover));
@@ -31,4 +28,11 @@ By default, files will be uploaded to the `public` directory, but you can change
 
 ```php
 protected static $upload_path = 'public';
+```
+
+### Separate files for each user
+This property is optional and allows each user's files to be saved in a separate folder.
+
+```php
+protected $user_directory = true;
 ```
