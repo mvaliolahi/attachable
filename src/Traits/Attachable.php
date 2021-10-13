@@ -13,11 +13,6 @@ trait Attachable
         static::saving(function ($model) {
 
             collect($model->attachable)->each(function ($field) use ($model) {
-
-                if (!request($field) instanceof UploadedFile) {
-                    return;
-                }
-
                 if (request($field) instanceof UploadedFile) {
                     self::deletePreviousFile($model, $field);
                     $model->$field = self::upload($model, request($field));
