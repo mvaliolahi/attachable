@@ -21,6 +21,9 @@ trait Attachable
                 if (request($field) instanceof UploadedFile) {
                     self::deletePreviousFile($model, $field);
                     $model->$field = self::upload($model, request($field));
+                } else {
+                    // use previous value to prevent delete field value in update scenario.
+                    $model->$field = $model->fresh()->getRawOriginal($field) ?? null;
                 }
             });
         });
