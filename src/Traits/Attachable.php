@@ -18,7 +18,11 @@ trait Attachable
                     $model->$field = self::upload($model, request($field));
                 } else {
                     // use previous value to prevent delete field value in update scenario.
-                    $model->$field = $model->fresh()->getRawOriginal($field) ?? null;
+                    if (is_null($model->fresh())) {
+                        return;
+                    }
+                    
+                    $model->$field =  $model->fresh()->getRawOriginal($field) ?? null;
                 }
             });
         });
@@ -43,8 +47,7 @@ trait Attachable
         $basePath = $model->upload_path ?? 'public';
         $directoryName = strtolower(Str::plural(class_basename($model), 2));
 
-        if ($model->user_directory ?? false)
-        {
+        if ($model->user_directory ?? false) {
             $directoryName = $directoryName . '/' . sha1(auth()->id());
         }
 
