@@ -52,16 +52,16 @@ trait Attachable
             $directoryName = $directoryName . '/' . sha1(auth()->id());
         }
 
-        $hashName =  $uploadedFile->hashName($directoryName);
-
         if ($model->resize_image ?? false && $model->resize_image[$field] ?? false) {
+            $hashName = $uploadedFile->hashName();
             $uploadedFile = self::compressImage($uploadedFile, $model->resize_image[$field]);
+            
             Storage::disk($basePath)->put($filename = $directoryName . '/' . $hashName, $uploadedFile);
 
             return $filename;
         }
 
-        return Storage::disk($basePath)->put($hashName, $uploadedFile);
+        return Storage::disk($basePath)->put($uploadedFile->hashName($directoryName), $uploadedFile);
     }
 
     /**
