@@ -5,6 +5,7 @@ namespace Mvaliolahi\Attachable\Traits;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 trait Attachable
 {
@@ -15,13 +16,13 @@ trait Attachable
             collect($model->attachable)->each(function ($field) use ($model) {
                 if (request($field) instanceof UploadedFile) {
                     self::deletePreviousFile($model, $field);
-                    $model->$field = self::upload($model, request($field));
+                    $model->$field = self::upload($model, $field,  request($field));
                 } else {
                     // use previous value to prevent delete field value in update scenario.
                     if (is_null($model->fresh())) {
                         return;
                     }
-                    
+
                     $model->$field =  $model->fresh()->getRawOriginal($field) ?? null;
                 }
             });
@@ -42,7 +43,7 @@ trait Attachable
      * @param UploadedFile $uploadedFile
      * @return string
      */
-    private static function upload($model, UploadedFile $uploadedFile)
+    private static function upload($model, $field, UploadedFile $uploadedFile)
     {
         $basePath = $model->upload_path ?? 'public';
         $directoryName = strtolower(Str::plural(class_basename($model), 2));
@@ -51,7 +52,16 @@ trait Attachable
             $directoryName = $directoryName . '/' . sha1(auth()->id());
         }
 
-        return Storage::put("{$basePath}/{$directoryName}", $uploadedFile, 'public');
+        $hashName =  $uploadedFile->hashName($directoryName);
+
+        if ($model->resize_image ?? false && $model->resize_image[$field] ?? false) {
+            $uploadedFile = self::compressImage($uploadedFile, $model->resize_image[$field]);
+            Storage::disk($basePath)->put($filename = $directoryName . '/' . $hashName, $uploadedFile);
+
+            return $filename;
+        }
+
+        return Storage::disk($basePath)->put($hashName, $uploadedFile);
     }
 
     /**
@@ -68,5 +78,13 @@ trait Attachable
         if ($filePath = $model->fresh()->$field) {
             Storage::delete($filePath);
         }
+    }
+
+    private static function compressImage($uploadedFile, $config)
+    {
+        $image = Image::make($uploadedFile->getRealPath());
+        $image->fit($config['width'], $config['height']);
+
+        return (string) $image->encode(null, $config['quality'] ?? 100);
     }
 }

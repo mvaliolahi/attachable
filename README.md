@@ -36,3 +36,16 @@ This property is optional and allows each user's files to be saved in a separate
 ```php
 protected $user_directory = true;
 ```
+
+### Resize Images
+This property is optional.
+
+```php
+protected $resize_image = [
+    'avatar' => [
+        'width' => 200,
+        'height' => 200,
+        'quality' => 90 # this is optional, default is 100
+    ]
+];
+```
