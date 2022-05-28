@@ -55,7 +55,7 @@ trait Attachable
         if ($model->resize_image ?? false && $model->resize_image[$field] ?? false) {
             $hashName = $uploadedFile->hashName();
             $uploadedFile = self::compressImage($uploadedFile, $model->resize_image[$field]);
-            
+
             Storage::disk($basePath)->put($filename = $directoryName . '/' . $hashName, $uploadedFile);
 
             return $filename;
@@ -83,7 +83,17 @@ trait Attachable
     private static function compressImage($uploadedFile, $config)
     {
         $image = Image::make($uploadedFile->getRealPath());
-        $image->fit($config['width'], $config['height']);
+        $fit = $config['fit'] ?? true;
+
+        if ($fit == true) {
+            $image->fit($config['width'] ?? null, $config['height'] ?? null);
+        } else {
+            if ($image->getWidth() > $config['resize_if_width'] ?? null) {
+                $image->resize($config['width'], $config['height'] ?? null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+            }
+        }
 
         return (string) $image->encode(null, $config['quality'] ?? 100);
     }

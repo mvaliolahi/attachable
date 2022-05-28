@@ -43,9 +43,11 @@ This property is optional.
 ```php
 protected $resize_image = [
     'avatar' => [
+        'fit' => true, // default is false and will resize the image to the given size
         'width' => 200,
         'height' => 200,
         'quality' => 90 # this is optional, default is 100
+        'resize_if_width' => 1024, // resize if width is greater than 1024
     ]
 ];
 ```
