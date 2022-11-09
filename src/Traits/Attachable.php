@@ -52,7 +52,7 @@ trait Attachable
             $directoryName = $directoryName . '/' . sha1(auth()->id());
         }
 
-        if ($model->resize_image ?? false && $model->resize_image[$field] ?? false) {
+        if (($model->resize_image ?? false) && ($model->resize_image[$field] ?? false)) {
             $hashName = $uploadedFile->hashName();
             $uploadedFile = self::compressImage($uploadedFile, $model->resize_image[$field]);
 
